@@ -176,12 +176,10 @@ app.post('/pantallaInicio', function(reqv, resv) {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 /*TODO
-
 Solo se guarda un usuario en el modelo
 No se puede dejar de seguir
 Posible inutilidad de guardar todos los productos
 ROMPER TODO
-
 */
 
 app.get('/ventasEnOrden',function(req,res){
@@ -558,7 +556,6 @@ app.post('/items/startFollowing',function(req,rest){
     
     var sell = req.body.sell;
     var citem = req.body.item;
-    console.log(citem);
     citem = JSON.parse(citem);
     var token = req.body.token;
     token = JSON.parse(token);
@@ -628,7 +625,7 @@ app.post('/items/startFollowing',function(req,rest){
                         if(!isEmptyObject(resp)){
 
                             resp = resp[0];
-                            if(!resp._user.includes(item._user) && sell !== undefined){
+                            if(!resp._user.includes(item._user) && sell != "yes"){
     
                                 var itemAux = [];
                                 itemAux.push(resp._user[0]);
@@ -828,13 +825,12 @@ routes.route('/FollSell/add').post(function(req, res) {
         }
         
     }
-    url = 'http://localhost:4000/items/searchItems/' + aux._name;
-    fetch(url, options)
+    var url1 = 'http://localhost:4000/items/searchItems/' + aux._name;
+    fetch(url1, options)
     .then(item => {item.json().then(items => {
         
         items.map(function(item){
 
-            console.log(item);
             fetch('http://localhost:4000/items/startFollowing', { 
       
                 method: 'POST',
@@ -854,16 +850,18 @@ routes.route('/FollSell/add').post(function(req, res) {
         })
     
     })})
-    /*url = 'http://localhost:4000/MLHuergo/FollSell/searchName/' + aux._name;
-    fetch(url, options)
+    console.log('aux')
+    console.log(aux)
+    var url2 = 'http://localhost:4000/MLHuergo/FollSell/searchName/' + aux._name;
+    fetch(url2, options)
      .then(resp =>{
-
         resp.json().then(rest => {
             
+            console.log(rest);
             //if(!isEmptyObject(rest)) res.status(200).json({"message": "Ya habia seguido a este usuario."});  
-            auxUsr.push(rest[0]._user);
+            if(rest[0] !== undefined) auxUsr.push(rest[0]._user);
             auxUsr.push(aux._user);
-            aux._user = auzUsr;
+            aux._user = auxUsr;
             let follSell = new FollSell(aux);
             follSell.save()
                 .then(item => {
@@ -878,8 +876,7 @@ routes.route('/FollSell/add').post(function(req, res) {
                 });
     
             })    
-
-        })  */
+        })  
 
      .catch(err => {
 

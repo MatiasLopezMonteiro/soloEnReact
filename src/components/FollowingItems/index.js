@@ -15,6 +15,25 @@ const Change = props => (
     </tr>
   )
   
+function stopFollowing(item){
+
+    var token = cookie.get("cookieQueGuardaElToken");
+    var aux = item._user.splice(item._user.indexOf(token.user_id), 1); 
+    fetch('http://localhost:4000/MLHuergo/items/update', {
+
+        method: 'POST',
+        body: JSON.stringify(item),
+        headers:{
+            'Content-Type': 'application/json',
+        }
+
+    }).then(function(rest){ 
+
+        window.location.reload();
+
+    })
+
+}
 
 function getChanges(chan){
 
@@ -32,6 +51,7 @@ const Item = props => (
 
     <AccordionItem title={"Nombre: " + props.item._name + " Vendedor: " + props.item._seller}>
 
+        <span className="btn btn-warning"  onClick={() => stopFollowing(props.item)}>Dejar de seguir</span>
         <table className="table table-striped" style={{ marginTop: 20 }}>
 
             <thead>

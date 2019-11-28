@@ -13,8 +13,9 @@ function startFollowing(item) {
 
   console.log(item);
   item = JSON.stringify(item);
-  fetch('http://localhost:4000/items/startFollowing', { 
-      
+  //fetch('https://pruebaenreact.azurewebsites.net/items/startFollowing', { 
+  fetch('http://localhost:4000/items/startFollowing', {
+
     method: 'POST',
     body: JSON.stringify({
       item: item,

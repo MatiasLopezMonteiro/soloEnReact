@@ -60,7 +60,7 @@ function isEmptyObject(obj){
 
 function lookForItems(seller){
 
-    localStorage.setItem('seller', seller);
+    localStorage.setItem('sell', seller);
     fetch('http://localhost:4000/MLHuergo/items/searchSeller/' + seller)  
     .then(res => res.json().then(rest => {
         
@@ -107,7 +107,8 @@ class FollowingSellers extends Component {
       
     componentWillMount(){    
 
-        if(localStorage.getItem('seller') == 'null' || localStorage.getItem('seller') == null){
+        console.log(localStorage.getItem('sell'));
+        if(localStorage.getItem('sell') == 'null' || localStorage.getItem('sell') == null){
 
             fetch('http://localhost:4000/MLHuergo/FollSell/searchForMe', { 
         
@@ -173,12 +174,75 @@ class FollowingSellers extends Component {
 
             }).catch(function (err){console.log(err)})
             changes = true;
-            localStorage.setItem('seller', null)
+            localStorage.setItem('sell', null)
 
         }
 
     }
 
+    handlePage(){
+
+        fetch('http://localhost:4000/MLHuergo/items/getFollowed', { 
+      
+            method: 'POST',
+            body: JSON.stringify({
+              token: JSON.stringify(cookie.get("cookieQueGuardaElToken"))
+            }),
+            headers:{
+              'Content-Type': 'application/json',
+            }
+        
+        })
+        .then(res => {
+
+            var itemId = [];
+            res.json().then(data => {
+                
+                console.log(data);
+                data.map(function(citem, i){
+    
+                    itemId.push(citem._itemId);
+    
+                });
+                console.log(itemId);
+                fetch('http://localhost:4000/MLHuergo/changes/getMine', { 
+          
+                    method: 'POST',
+                    body: JSON.stringify({
+                        itemId: itemId,
+                    }),
+                    headers:{
+                      'Content-Type': 'application/json',
+                    }
+                
+                  })
+                .then(resp => {
+                    
+                    resp.json().then(datap => {
+
+                        console.log(datap);
+                        localStorage.setItem('changes', JSON.stringify(datap));
+                        this.setState({items: data});
+                        if(localStorage.getItem('first') == undefined){
+
+                            localStorage.setItem('first', 'false');
+                            window.location.reload();
+
+                        }
+
+                    })
+    
+                }).catch(function (err){console.log(err)})
+                
+            });
+
+        })
+        .catch(function (err){
+            console.log(err);
+        })
+
+    }
+    
     itemList() {
 
         console.log('algo');
